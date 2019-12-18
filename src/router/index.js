@@ -1,29 +1,37 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Router from 'vue-router'
+import Layout from '@/components/common/Layout'
 
-Vue.use(VueRouter)
+Vue.use(Router)
 
-const routes = [
-  {
-    path: '/',
+export const constRoutes = [{
+  path: '/login',
+  name: 'login',
+  component: () => import(/* webpackChunkName: "login" */ '@page/Login.vue')
+}, {
+  path: '/',
+  name: 'home',
+  component: Layout,
+  redirect: '/home',
+  children: [{
+    path: 'home',
     name: 'home',
-    component: Home
+    meta: { title: '首页' },
+    component: () => import(/* webpackChunkName: "home" */ '@page/Home.vue')
+  }, {
+    path: '/404',
+    component: () =>
+      import(/* webpackChunkName: "404" */ '@page/error/404.vue'),
+    meta: { title: '404' }
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+    path: '/403',
+    component: () =>
+      import(/* webpackChunkName: "403" */ '@page/error/403.vue'),
+    meta: { title: '403' }
+  }]
+}]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+export default new Router({
+  routes: constRoutes
 })
-
-export default router
