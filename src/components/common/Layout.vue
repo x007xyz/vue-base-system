@@ -35,6 +35,7 @@ export default {
     vTags
   },
   created () {
+    this.$store.dispatch('fetchUserInfo')
     bus.$on('collapse-content', msg => {
       this.collapse = msg
     })

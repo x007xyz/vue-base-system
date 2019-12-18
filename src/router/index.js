@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/components/common/Layout'
+import { getToken } from '@/utils/token'
 
 Vue.use(Router)
 
@@ -32,6 +33,27 @@ export const constRoutes = [{
   }]
 }]
 
-export default new Router({
+const router = new Router({
   routes: constRoutes
 })
+const whiteList = ['/login']
+router.beforeEach((to, from, next) => {
+  const hasToken = getToken()
+  if (hasToken) {
+    if (to.path === '/login') {
+      next({ path: '/' })
+    } else {
+      next()
+    }
+  } else {
+    if (whiteList) {
+      if (whiteList.includes(to.path)) {
+        next()
+      } else {
+        next('/login')
+      }
+    }
+  }
+})
+
+export default router
