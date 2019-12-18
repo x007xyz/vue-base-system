@@ -22,7 +22,7 @@ module.exports = {
           })
         } else if (username === 'chen') {
           res.cookie('jwt', '002')
-          res.join({
+          res.json({
             code: 10000,
             data: username
           })
@@ -48,6 +48,10 @@ module.exports = {
             code: 10006
           })
         }
+      })
+      app.delete('/admin/user/token', (req, res) => {
+        res.clearCookie('jwt')
+        res.json({ code: 10000 })
       })
     }
     // proxy: {
