@@ -44,17 +44,21 @@ export function filterAsyncRoutes (routes, roles) {
 export default {
   namespace: true,
   state: {
-    username: '',
-    roles: []
+    username: localStorage.getItem('username') || '',
+    roles: JSON.parse(localStorage.getItem('roles') || '[]')
   },
   mutations: {
     clearUserInfo (state) {
       state.username = ''
       state.roles = []
+      localStorage.removeItem('username')
+      localStorage.removeItem('roles')
     },
     setUserInfo (state, { username, roles }) {
       state.username = username
+      localStorage.setItem('username', state.username)
       state.roles = roles || []
+      localStorage.setItem('roles', JSON.stringify(state.roles))
     }
   },
   actions: {

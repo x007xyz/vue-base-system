@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/components/common/Layout'
+import store from '../store'
 import { getToken } from '@/utils/token'
 
 Vue.use(Router)
@@ -98,11 +99,20 @@ const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
   const hasToken = getToken()
   if (hasToken) {
-    console.log(to)
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      next()
+      const needRoles = to.meta && to.meta.roles && to.meta.roles.length > 0
+      if (needRoles) {
+        const hasRoles = store.state.user.roles.some(role => to.meta.roles.includes(role))
+        if (hasRoles) {
+          next()
+        } else {
+          next('/403')
+        }
+      } else {
+        next()
+      }
     }
   } else {
     if (whiteList) {
